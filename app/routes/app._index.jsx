@@ -5,6 +5,10 @@ import { executeGraphQL } from "../../graphql/graphql";
 import { getAllOrdersQuery, getShopQuery } from "./../../graphql/queries";
 import { formatOrders } from "./../../helper/helper";
 import { authenticate } from "../shopify.server";
+import { connectToDatabase } from "./../../lib/db";
+import Order from "./../../model/order.model";
+
+
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -12,8 +16,8 @@ export const loader = async ({ request }) => {
   const orders = await executeGraphQL(admin, getAllOrdersQuery);
   const formattedOrders = formatOrders(orders, shopData.shop.id);
 
-  // await connectToDatabase();
-  // await Order.insertMany(formattedOrders);
+  await connectToDatabase();
+  await Order.insertMany(formattedOrders);
 
   return { formattedOrders };
 };
