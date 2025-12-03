@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { executeGraphQL } from "../graphql/graphql";
 import { getAllOrdersQuery, getShopQuery } from "../graphql/queries";
-import { compareOrders, formatOrders } from "../helper/helper";
+import { compareOrders, formatOrders, formatDate } from "../helper/helper";
 import { connectToDatabase } from "../lib/db";
 import Order from "../model/order.model";
 import { authenticate } from "../shopify.server";
@@ -86,7 +86,7 @@ export default function Index() {
                 <s-table-cell>{order.order_number}</s-table-cell>
                 <s-table-cell>{order.customer_name}</s-table-cell>
                 <s-table-cell>{order.phone}</s-table-cell>
-                <s-table-cell>{order.created_at}</s-table-cell>
+                <s-table-cell>{formatDate(order.created_at)}</s-table-cell>
                 <s-table-cell>
                   {order.uploaded ? (
                     <s-badge tone="success">uploaded</s-badge>
