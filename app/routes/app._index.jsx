@@ -1,14 +1,13 @@
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { boundary } from "@shopify/shopify-app-react-router/server";
 import { useEffect } from "react";
 import { useFetcher, useLoaderData } from "react-router";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { authenticate } from "../shopify.server";
-import { boundary } from "@shopify/shopify-app-react-router/server";
 import { executeGraphQL } from "../graphql/graphql";
-import { getShopQuery, getAllOrdersQuery } from "../graphql/queries";
-import { formatOrders, compareOrders } from "../helper/helper";
+import { getAllOrdersQuery, getShopQuery } from "../graphql/queries";
+import { compareOrders, formatOrders } from "../helper/helper";
 import { connectToDatabase } from "../lib/db";
 import Order from "../model/order.model";
-import OrderTable from "./../components/table/OrderTable";
+import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);

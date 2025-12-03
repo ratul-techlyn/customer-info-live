@@ -21,16 +21,8 @@ export function formatOrders(response, shopId) {
   });
 }
 
-
-import _ from "underscore";
-
 export function formatOrder(order, shopId) {
   if (!order) return null;
-
-  // const customerName = _.compact([
-  //   _.get(node, ""),
-  //   _.get(node, "customer.last_name")
-  // ]).join(" ");
 
   const lineItemNames = _.map(order.line_items, (item) => item.name) || [];
 
