@@ -18,6 +18,8 @@ export async function fetchAllData(admin, query) {
       const data = responseData[Object.keys(responseData)[0]];
       allData = allData.concat(data.edges.map((edge) => edge.node));
 
+      console.log(data);
+
       hasNextPage = data.pageInfo.hasNextPage;
       cursor = data.pageInfo.endCursor;
     } catch (error) {
@@ -51,3 +53,4 @@ export async function executeGraphQL(admin, mutation, variables = {}) {
     throw error;
   }
 }
+
