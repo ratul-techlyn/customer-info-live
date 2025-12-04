@@ -12,7 +12,7 @@ export function formatOrders(response, shopId) {
       order_number: node.name,
       created_at: node.createdAt || null,
       customer_name: customerName,
-      phone: node.customer?.defaultAddress?.phone || null,
+      phone: formatBDPhone(node.customer?.defaultAddress?.phone) || null,
       city: node.customer?.defaultAddress?.city || null,
       items: lineItemNames.join(", "),
       subtotal: node.subtotalPriceSet?.shopMoney?.amount || null,
@@ -31,7 +31,7 @@ export function formatOrder(order, shopId) {
     order_number: order.name,
     created_at: order.created_at,
     customer_name: order.customer.first_name + " " + order.customer.last_name,
-    phone: order.customer.default_address.phone,
+    phone: formatBDPhone(order.customer.default_address.phone),
     city: order.customer.default_address.city,
     items: lineItemNames.join(", "),
     subtotal: order.subtotal_price_set.shop_money.amount,
@@ -63,6 +63,23 @@ export function compareOrders(formattedOrders, uploadedOrders) {
 export function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toISOString().split("T")[0];
+}
+
+
+export function formatBDPhone(phone) {
+  if (!phone) return "";
+
+  // remove all non-digit characters
+  let cleaned = phone.replace(/\D/g, "");
+
+  // remove leading country code (880 or 88)
+  if (cleaned.startsWith("880")) cleaned = cleaned.slice(3);
+  else if (cleaned.startsWith("88")) cleaned = cleaned.slice(2);
+
+  // ensure it starts with 0
+  if (!cleaned.startsWith("0")) cleaned = "0" + cleaned;
+
+  return cleaned;
 }
 
 
