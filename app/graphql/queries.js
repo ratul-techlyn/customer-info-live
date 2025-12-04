@@ -74,6 +74,10 @@ query GetOrders($after: String) {
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }
 `;
