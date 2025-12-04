@@ -1,22 +1,23 @@
 import _ from "underscore";
 
-export function formatOrders(response, shopId) {
-  return response.orders.edges.map(({ node }) => {
-    const customerName = `${node.customer?.firstName || ""} ${node.customer?.lastName || ""}`.trim();
+export function formatOrders(orders, shopId) {
+  return orders.map(order => {
+    const customer = order.customer || {};
+    const customerName = `${customer.firstName || ""} ${customer.lastName || ""}`.trim();
 
     // Collect line item names
-    const lineItemNames = node.lineItems?.edges?.map(item => item.node?.name) || [];
+    const lineItemNames = (order.lineItems?.edges || []).map(item => item.node?.name).filter(Boolean);
 
     return {
       shopId: shopId,
-      order_number: node.name,
-      created_at: node.createdAt || null,
+      order_number: order.name,
+      created_at: order.createdAt || null,
       customer_name: customerName,
-      phone: formatBDPhone(node.customer?.defaultAddress?.phone) || null,
-      city: node.customer?.defaultAddress?.city || null,
+      phone: formatBDPhone(customer.defaultAddress?.phone) || null,
+      city: customer.defaultAddress?.city || null,
       items: lineItemNames.join(", "),
-      subtotal: node.subtotalPriceSet?.shopMoney?.amount || null,
-      shipping_price: node.currentShippingPriceSet?.shopMoney?.amount || null,
+      subtotal: order.subtotalPriceSet?.shopMoney?.amount || null,
+      shipping_price: order.currentShippingPriceSet?.shopMoney?.amount || null,
     };
   });
 }
@@ -48,7 +49,7 @@ export function compareOrders(formattedOrders, uploadedOrders) {
   const extendedFormattedOrders = _.map(formattedOrders, (order) => {
     const uploaded = !!uploadedMap[order.order_number];
     return { ...order, uploaded };
-  });
+  }).reverse();
 
   // Filter only orders NOT uploaded yet
   const unuploadedOrders = _.filter(extendedFormattedOrders, (order) => !order.uploaded);

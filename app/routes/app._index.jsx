@@ -2,7 +2,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { useEffect } from "react";
 import { useFetcher, useLoaderData } from "react-router";
-import { executeGraphQL } from "../graphql/graphql";
+import { executeGraphQL, fetchAllData } from "../graphql/graphql";
 import { getAllOrdersQuery, getShopQuery } from "../graphql/queries";
 import { compareOrders, formatOrders, formatDate } from "../helper/helper";
 import { connectToDatabase } from "../lib/db";
@@ -12,7 +12,7 @@ import { authenticate } from "../shopify.server";
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const shopData = await executeGraphQL(admin, getShopQuery);
-  const orders = await executeGraphQL(admin, getAllOrdersQuery);
+  const orders = await fetchAllData(admin, getAllOrdersQuery);
   const formattedOrders = formatOrders(orders, shopData.shop.id);
 
   await connectToDatabase();
@@ -55,10 +55,10 @@ export default function Index() {
   }, [fetcher.data?.result, shopify]);
 
   const generateProduct = () =>
-  fetcher.submit(
-    { orders: JSON.stringify(unuploadedOrders) },
-    { method: "POST" }
-  );
+    fetcher.submit(
+      { orders: JSON.stringify(unuploadedOrders) },
+      { method: "POST" }
+    );
 
   return (
     <s-page heading="Customer Info">
