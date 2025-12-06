@@ -18,8 +18,6 @@ export async function fetchAllData(admin, query) {
       const data = responseData[Object.keys(responseData)[0]];
       allData = allData.concat(data.edges.map((edge) => edge.node));
 
-      console.log(responseData);
-
       hasNextPage = data.pageInfo.hasNextPage;
       cursor = data.pageInfo.endCursor;
     } catch (error) {
